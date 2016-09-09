@@ -1,0 +1,24 @@
+{
+    "name"       : "softr/visualset-vipp",
+    "type"       : "library",
+    "description": "VisualSet Webservice SDK",
+    "keywords"   : ["VisualSet", "API", "Correios", "Rastreamento", "Ecommerce"],
+    "homepage"   : "https://github.com/softr/visualset-vipp",
+    "license"    : "MIT",
+    "authors": [
+        {
+            "name"    : "Agência Softr",
+            "email"   : "agencia.softr@gmail.com",
+            "homepage": "http://www.softr.com.br"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Softr\\Vipp\\": "src/"
+        }
+    }
+}
