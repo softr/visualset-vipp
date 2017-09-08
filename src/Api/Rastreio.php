@@ -22,65 +22,78 @@ class Rastreio extends \Softr\Vipp\Core\Api\AbstractApi
     public function rastrearObjeto($numeroEtiqueta, $idConhecimento = '')
     {
         try {
-            $result = $this->client->ListarRastreioObjeto(array(
-                'NrEtiquetaPostagem' => $numeroEtiqueta,
-                'IdConhecimento'     => $idConhecimento
-            ));
 
-            $result = $result->ListarRastreioObjetoResult;
+            // Dados do envio
+            $dados = [
+                'PerfilVipp' => [
+                    'Usuario'  => $this->config->getUsuario(),
+                    'Token'    => $this->config->getToken(),
+                    'IdPerfil' => $this->config->getPerfil(),
+                ],
+                'NrEtiquetaPostagem' => $numeroEtiqueta,
+                'IdConhecimento'     => $idConhecimento,
+            ];
+
+            $result = $this->client->ListarRastreioObjeto(['ListarRastreio' => $dados]);
+
+            // Validar resultado
+            if (property_exists($result, 'ListarRastreioObjetoResult') == false || property_exists($result->ListarRastreioObjetoResult, 'ObjetoRastreio') == false) {
+                return false;
+            }
+
+            $result = $result->ListarRastreioObjetoResult->ObjetoRastreio;
         } catch (Exception $e) {
             return false;
         }
 
         // Objeto não encontrado
-        if ($result->IdConhecimento < 1) {
+        if (property_exists($result, 'IdConhecimento') == false || $result->IdConhecimento < 1) {
             return false;
         }
 
         // Array de eventos
         $eventos = new Collection();
 
-        if(property_exists($result->EventoRastreio, 'EventoRastreio') && is_array($result->EventoRastreio->EventoRastreio))
-        {
-            foreach($result->EventoRastreio->EventoRastreio as $er)
-            {
+        if (property_exists($result->EventoRastreio, 'EventoRastreio') && is_array($result->EventoRastreio->EventoRastreio)) {
+            foreach ($result->EventoRastreio->EventoRastreio as $er) {
                 $evento = new EventoRastreioModel();
 
-                $evento->setIdVolume($er->EtiquetaPostagem)
-                         ->setIdEvento($er->IdConhecimento)
-                         ->setTipo($er->DtPostagem)
-                         ->setIdStatus($er->IdUltimoStatus)
-                         ->setDescricao($er->IdGrupoStatusEvento)
-                         ->setData($er->NomeGrupo)
-                         ->setNomeGrupo($er->IdStatusEntrega)
-                         ->setCodigoEdi($er->StPI)
+                $evento->setIdVolume($er->IdVolumeObjeto)
+                         ->setIdEvento($er->IdEventoRastreio)
+                         ->setTipo($er->TipoEvento)
+                         ->setIdStatus($er->IdStatus)
+                         ->setDescricao($er->DescricaoStatusEvento)
+                         ->setData($er->DtEventoCompleta)
+                         ->setIdGrupoStatus($er->IdGrupoStatusEvento)
+                         ->setNomeGrupo($er->NomeGrupoStatusEvento)
+                         ->setCodigoEdi($er->CodigoEdi)
 
                          // Origem
-                         ->setIdLocal($er->StPI)
-                         ->setLocal($er->StPI)
-                         ->setTipoEndereco($er->StPI)
-                         ->setEndereco($er->StPI)
-                         ->setComplemento($er->StPI)
-                         ->setBairro($er->StPI)
-                         ->setCidade($er->StPI)
-                         ->setUf($er->StPI)
-                         ->setSto($er->StPI)
+                         ->setIdLocal($er->IdLocalEventoOrigem)
+                         ->setLocal($er->LocalEvento)
+                         ->setTipoEndereco($er->TipoEndereco)
+                         ->setEndereco($er->EnderecoEvento)
+                         ->setComplemento($er->ComplementoEnderecoEvento)
+                         ->setBairro($er->BairroEvento)
+                         ->setCidade($er->CidadeEvento)
+                         ->setUf($er->UFEvento)
+                         ->setSto($er->STOEvento)
 
                          // Destino
-                         ->setIdLocalDestino($er->StPI)
-                         ->setDestino($er->StPI)
-                         ->setTipoEnderecoDestino($er->StPI)
-                         ->setEnderecoDestino($er->StPI)
-                         ->setComplementoDestino($er->StPI)
-                         ->setBairroDestino($er->StPI)
-                         ->setCidadeDestino($er->StPI)
-                         ->setUfDestino($er->StPI)
-                         ->setStoDestino($er->StPI)
+                         ->setIdLocalDestino($er->IdLocalEventoDestino)
+                         ->setDestino($er->Destino)
+                         ->setTipoEnderecoDestino($er->TipoEnderecoDestino)
+                         ->setEnderecoDestino($er->EnderecoDestino)
+                         ->setComplementoDestino($er->ComplementoEnderecoDestino)
+                         ->setBairroDestino($er->BairroDestino)
+                         ->setCidadeDestino($er->CidadeDestino)
+                         ->setUfDestino($er->UFDestino)
+                         ->setStoDestino($er->STODestino)
 
                          // Dados do recebedor
-                         ->setNomeRecebedor($er->StPI)
-                         ->setDocumentoRecebedor($er->StPI)
-                         ->setObsRecebedor($er->StPI);
+                         ->setNomeRecebedor($er->NomeRecebedor)
+                         ->setDocumentoRecebedor($er->DocumentoRecebedor)
+                         ->setObsRecebedor($er->ObsRecebedor);
 
                 $eventos->addItem($evento);
             }
@@ -94,7 +107,7 @@ class Rastreio extends \Softr\Vipp\Core\Api\AbstractApi
                  ->setDataPostagem($result->DtPostagem)
                  ->setUltimoStatus($result->IdUltimoStatus)
                  ->setGrupoStatusEvento($result->IdGrupoStatusEvento)
-                 ->setNomeGrupo($result->NomeGrupo)
+                 ->setNomeGrupo($result->NomeGrupoStatusEvento)
                  ->setStatusEntrega($result->IdStatusEntrega)
                  ->setIdAoRemetente($result->IdAoRemetente)
                  ->setPi($result->StPI)

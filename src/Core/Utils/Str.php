@@ -16,8 +16,7 @@ class Str
      */
     public static function convertToCamelCase($str)
     {
-        $callback = function($match)
-        {
+        $callback = function ($match) {
             return strtoupper($match[2]);
         };
 

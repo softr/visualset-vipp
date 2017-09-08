@@ -4,7 +4,6 @@ namespace Softr\Vipp\Model;
 use \Softr\Vipp\Core\Utils\Time;
 use \Softr\Vipp\Core\Collection;
 
-
 /**
  * Rastreio Model
  *

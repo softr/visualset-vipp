@@ -26,21 +26,22 @@ class Postagem extends \Softr\Vipp\Core\Api\AbstractApi
         try {
 
             // Complementar dados do usuário
-            $dados['PerfilVipp'] =
-            [
+            $dados['PerfilVipp'] = [
                 'Usuario'  => $this->config->getUsuario(),
                 'Token'    => $this->config->getToken(),
                 'IdPerfil' => $this->config->getPerfil(),
             ];
 
-            $dados['ContratoEct'] =
-            [
+            $dados['ContratoEct'] = [
                 'NrContrato'           => $this->config->getNumeroContrato(),
                 'CodigoAdministrativo' => $this->config->getCodigoAdministrativo(),
                 'NrCartao'             => $this->config->getNumeroCartao(),
             ];
 
             $result = $this->client->PostarObjeto(['PostagemVipp' => $dados]);
+
+            file_put_contents(DIR_LOGS . 'visualset_request.txt', json_encode($dados), FILE_APPEND);
+            file_put_contents(DIR_LOGS . 'visualset_response.txt', $result->PostarObjetoResult->any, FILE_APPEND);
 
             $result = simplexml_load_string($result->PostarObjetoResult->any);
         } catch (Exception $e) {

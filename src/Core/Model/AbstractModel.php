@@ -17,8 +17,7 @@ abstract class AbstractModel
      */
     public function __construct(array $parameters = [])
     {
-        if(empty($parameters))
-        {
+        if (empty($parameters)) {
             return;
         }
 
@@ -32,18 +31,13 @@ abstract class AbstractModel
      */
     public function build(array $parameters)
     {
-        foreach($parameters as $property => $value)
-        {
-            if(property_exists($this, $property))
-            {
+        foreach ($parameters as $property => $value) {
+            if (property_exists($this, $property)) {
                 $this->$property = $value;
-
-                // Apply mutator
 
                 $mutator = 'set' . ucfirst(Str::convertToCamelCase($property));
 
-                if(method_exists($this, $mutator))
-                {
+                if (method_exists($this, $mutator)) {
                     call_user_func_array(array($this, $mutator), [$value]);
                 }
             }
@@ -64,7 +58,6 @@ abstract class AbstractModel
         $data = array();
 
         foreach ($props as $prop) {
-
             $accessor = 'get' . ucfirst(Str::convertToCamelCase($prop->getName()));
 
             if (method_exists($this, $accessor)) {

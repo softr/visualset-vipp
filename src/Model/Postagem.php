@@ -5,7 +5,6 @@ use \Softr\Vipp\Core\Collection;
 use \Softr\Vipp\Model\ContratoEct;
 use \Softr\Vipp\Model\Destinatario;
 
-
 /**
  * Postagem Model
  *

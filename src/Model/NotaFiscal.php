@@ -3,7 +3,6 @@ namespace Softr\Vipp\Model;
 
 use \Softr\Vipp\Core\Utils\Time;
 
-
 /**
  * NotaFiscal Model
  *

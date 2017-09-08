@@ -3,7 +3,6 @@ namespace Softr\Vipp\Model;
 
 use \Softr\Vipp\Core\Utils\Time;
 
-
 /**
  * EventoRastreio Model
  *
@@ -52,6 +51,13 @@ class EventoRastreio extends \Softr\Vipp\Core\Model\AbstractModel
      * @var  \DateTime
      */
     protected $data;
+
+    /**
+     * Id do Grupo de Status.
+     *
+     * @var  integer
+     */
+    protected $idGrupoStatus;
 
     /**
      * Nome do Status.
@@ -354,6 +360,30 @@ class EventoRastreio extends \Softr\Vipp\Core\Model\AbstractModel
     public function setData($data)
     {
         $this->data = Time::stringToDateTime($data);
+
+        return $this;
+    }
+
+    /**
+     * Retorna Id do Grupo de Status.
+     *
+     * @return  integer
+     */
+    public function getIdGrupoStatus()
+    {
+        return $this->idGrupoStatus;
+    }
+
+    /**
+     * Define Id do Grupo de Status.
+     *
+     * @param  integer  $idGrupoStatus  Nome Grupo
+     *
+     * @return self
+     */
+    public function setIdGrupoStatus($idGrupoStatus)
+    {
+        $this->idGrupoStatus = $idGrupoStatus;
 
         return $this;
     }
